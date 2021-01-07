@@ -1,0 +1,11 @@
+name: 'Setup Oracle client'
+description: 'Setup a Oracle instant client'
+author: 'WEN'
+branding:
+  icon: 'database'
+  color: 'red'
+runs:
+  using: 'composite'
+  steps:
+    - run: ${{ github.action_path }}/commands.sh
+      shell: bash
