@@ -28,12 +28,8 @@ jobs:
         uses: actions/checkout@v2 
       - name: Setup Oracledb client
         uses: ./
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          repository: GoodManWEN/oracle-11g-server-action
       - name: Setup Oracledb 11gR2 server
-        uses: GoodManWEN/oracle-11g-server-action@main
+        uses: GoodManWENNumber2/oracle-11g-server-action@v1.0
         with:
           host port: 1521 
           oracle version: '1.0.0'
