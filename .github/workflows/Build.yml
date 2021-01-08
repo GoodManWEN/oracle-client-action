@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+      - '[0-9].[0-9]+'  # matches to backport branches, e.g. 3.6
+      - dev
+  pull_request:
+    branches:
+      - 'main'
+      - '[0-9].[0-9]+'
+  schedule:
+    - cron:  '0 9 1 * *'  # Runs at 09:00 UTC on the 1st of every month
+
+jobs:
+  
+  build:
+    
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        python-version: ['3.7']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2 
+      - name: Setup Oracledb client
+        uses: ./
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: GoodManWEN/oracle-11g-server-action
+      - name: Setup Oracledb 11gR2 server
+        uses: GoodManWEN/oracle-11g-server-action@main
+        with:
+          host port: 1521 
+          oracle version: '1.0.0'
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |  # sleep to make sure Oracle server is fully loaded
+          sleep 60            
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-asyncio cx-Oracle-async
+      - name: Test with pytest
+        run: |
+          sleep 30
+          pytest
+
+          
